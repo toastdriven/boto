@@ -56,6 +56,15 @@ GENERATION_RE = re.compile(r'(?P<versionless_uri_str>.+)'
 VERSION_RE = re.compile('(?P<versionless_uri_str>.+)#(?P<version_id>.+)$')
 
 
+# Useful for detecting SSL cipher capabilities.
+IS_PY27 = False
+
+if sys.version_info[:2] > (2, 6):
+    IS_PY27 = True
+
+SSL_CIPHERS = 'HIGH:!aNULL:!RC4:!DES:!3DES'
+
+
 def init_logging():
     for file in BotoConfigLocations:
         try:

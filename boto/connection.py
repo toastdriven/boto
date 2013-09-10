@@ -791,12 +791,17 @@ class AWSAuthConnection(object):
             boto.log.debug("wrapping ssl socket for proxied connection; "
                            "CA certificate file=%s",
                            self.ca_certificates_file)
-            key_file = self.http_connection_kwargs.get('key_file', None)
-            cert_file = self.http_connection_kwargs.get('cert_file', None)
-            sslSock = ssl.wrap_socket(sock, keyfile=key_file,
-                                      certfile=cert_file,
-                                      cert_reqs=ssl.CERT_REQUIRED,
-                                      ca_certs=self.ca_certificates_file)
+            ssl_kwargs = {
+                'key_file': self.http_connection_kwargs.get('key_file', None),
+                'cert_file': self.http_connection_kwargs.get('cert_file', None),
+                'cert_reqs': ssl.CERT_REQUIRED,
+                'ca_certs': self.ca_certificates_file,
+            }
+
+            if boto.IS_PY27:
+                ssl_kwargs['ciphers'] = boto.SSL_CIPHERS
+
+            sslSock = ssl.wrap_socket(sock, **ssl_kwargs)
             cert = sslSock.getpeercert()
             hostname = self.host.split(':', 0)[0]
             if not https_connection.ValidateCertificateHostname(cert, hostname):

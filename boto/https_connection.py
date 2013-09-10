@@ -111,10 +111,18 @@ class CertValidatingHTTPSConnection(httplib.HTTPConnection):
     sock.connect((self.host, self.port))
     boto.log.debug("wrapping ssl socket; CA certificate file=%s",
                    self.ca_certs)
-    self.sock = ssl.wrap_socket(sock, keyfile=self.key_file,
-                                certfile=self.cert_file,
-                                cert_reqs=ssl.CERT_REQUIRED,
-                                ca_certs=self.ca_certs)
+
+    ssl_kwargs = {
+        'key_file': self.key_file,
+        'cert_file': self.cert_file,
+        'cert_reqs': ssl.CERT_REQUIRED,
+        'ca_certs': self.ca_certs,
+    }
+
+    if boto.IS_PY27:
+        ssl_kwargs['ciphers'] = boto.SSL_CIPHERS
+
+    self.sock = ssl.wrap_socket(sock, **ssl_kwargs)
     cert = self.sock.getpeercert()
     hostname = self.host.split(':', 0)[0]
     if not ValidateCertificateHostname(cert, hostname):
