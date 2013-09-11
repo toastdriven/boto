@@ -792,8 +792,8 @@ class AWSAuthConnection(object):
                            "CA certificate file=%s",
                            self.ca_certificates_file)
             ssl_kwargs = {
-                'key_file': self.http_connection_kwargs.get('key_file', None),
-                'cert_file': self.http_connection_kwargs.get('cert_file', None),
+                'keyfile': self.http_connection_kwargs.get('key_file', None),
+                'certfile': self.http_connection_kwargs.get('cert_file', None),
                 'cert_reqs': ssl.CERT_REQUIRED,
                 'ca_certs': self.ca_certificates_file,
             }

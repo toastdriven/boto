@@ -113,8 +113,8 @@ class CertValidatingHTTPSConnection(httplib.HTTPConnection):
                    self.ca_certs)
 
     ssl_kwargs = {
-        'key_file': self.key_file,
-        'cert_file': self.cert_file,
+        'keyfile': self.key_file,
+        'certfile': self.cert_file,
         'cert_reqs': ssl.CERT_REQUIRED,
         'ca_certs': self.ca_certs,
     }
